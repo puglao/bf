@@ -1,4 +1,4 @@
-# Brainfuck Compiler
+# Brainfuck Playground
 
 A clean, minimalist web application that serves as a Brainfuck compiler/interpreter with an intuitive split-screen interface.
 
@@ -13,14 +13,16 @@ This project was created to try out [Claude Code](https://claude.ai/code) - Anth
 - **Keyboard shortcuts**: Use Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to execute code
 - **Interactive input**: Input directly in the output area when programs require user input
 - **Sample programs**: Built-in "Hello World" example to get started
-- **Light/Dark theme**: Clean, minimalist themes with seamless switching
+- **Dark theme default**: Clean, minimalist themes with seamless switching (defaults to dark mode)
 - **Comprehensive help**: Built-in dialog with language reference and examples
 - **Error handling**: Execution limits and error messages to prevent infinite loops
+- **GitHub integration**: Direct link to source code repository in the header
+- **Code persistence**: Your code is automatically saved in local storage
 - **Modular code**: Clean separation of HTML, CSS, and JavaScript
 
 ## 🎮 Try It Live
 
-Visit the live demo: [https://puglao.github.io/bf/](https://puglao.github.io/bf/)
+Visit the live demo: [https://bf.outofwork.dev/](https://bf.outofwork.dev/)
 
 ## 🛠️ Usage
 

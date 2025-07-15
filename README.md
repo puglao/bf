@@ -1,6 +1,6 @@
 # Brainfuck Compiler
 
-A single-page web application that serves as a Brainfuck compiler/interpreter with a clean, split-screen interface.
+A clean, minimalist web application that serves as a Brainfuck compiler/interpreter with an intuitive split-screen interface.
 
 ## 🎯 Purpose
 
@@ -11,10 +11,12 @@ This project was created to try out [Claude Code](https://claude.ai/code) - Anth
 - **Split-screen interface**: Code editor on the left, output display on the right
 - **Real-time execution**: Run Brainfuck code instantly with the click of a button
 - **Keyboard shortcuts**: Use Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to execute code
-- **Input support**: Handle Brainfuck programs that require user input
+- **Interactive input**: Input directly in the output area when programs require user input
 - **Sample programs**: Built-in "Hello World" example to get started
-- **Dark theme**: VS Code-inspired interface with syntax highlighting aesthetics
+- **Light/Dark theme**: Clean, minimalist themes with seamless switching
+- **Comprehensive help**: Built-in dialog with language reference and examples
 - **Error handling**: Execution limits and error messages to prevent infinite loops
+- **Modular code**: Clean separation of HTML, CSS, and JavaScript
 
 ## 🎮 Try It Live
 
@@ -26,7 +28,7 @@ Visit the live demo: [https://puglao.github.io/bf/](https://puglao.github.io/bf/
 2. Write Brainfuck code in the left editor panel
 3. Click "Run" or press Ctrl+Enter (Cmd+Enter on Mac) to execute
 4. View the output in the right panel
-5. Use the input field at the bottom for programs that need user input
+5. When programs need input, type directly in the output area and press Enter
 
 ### Sample Programs
 
@@ -35,9 +37,18 @@ Visit the live demo: [https://puglao.github.io/bf/](https://puglao.github.io/bf/
 ++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
 ```
 
-**Simple Counter (outputs numbers 1-10):**
+**Simple Addition (2 + 3):**
 ```brainfuck
-++++++++++[>++++++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.
+++       Cell 0 = 2
+>+++     Cell 1 = 3
+[<+>-]   Add cell 1 to cell 0
+<        Move back to cell 0
+++++++++++++++++++++++++++++++++++++++++++++++++.  Add 48 and output (to get ASCII '5')
+```
+
+**Echo Program:**
+```brainfuck
+,[.,]    Read input and echo it back until EOF
 ```
 
 ## 🧠 About Brainfuck
@@ -55,10 +66,23 @@ Brainfuck is an esoteric programming language created in 1993 by Urban Müller. 
 
 ## 🏗️ Technical Details
 
-- **Pure HTML/CSS/JavaScript**: No frameworks or build tools required
+- **Clean Architecture**: Separated HTML, CSS, and JavaScript files
+- **Minimalist Design**: Clean, modern interface with system fonts
 - **30,000 memory cells**: Standard Brainfuck memory model
 - **Execution limits**: Prevents infinite loops with a 1,000,000 step limit
 - **Cross-platform**: Works in any modern web browser
+- **No dependencies**: Pure vanilla JavaScript, no frameworks required
+
+## 📁 Project Structure
+
+```
+/bf/
+├── index.html      # Main HTML structure
+├── style.css       # Styling and themes
+├── script.js       # Brainfuck interpreter and UI logic
+├── CLAUDE.md       # Development documentation
+└── README.md       # Project information
+```
 
 ## 🤖 Built with Claude Code
 
@@ -67,6 +91,7 @@ This entire project was developed using Claude Code, demonstrating:
 - Natural language to code conversion
 - Real-time debugging and iteration
 - Complete project setup from scratch
+- Iterative design improvements
 
 ## 📝 License
 

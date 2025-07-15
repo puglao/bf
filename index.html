@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainfuck Compiler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #2d2d30;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid #3e3e42;
+        }
+
+        .header h1 {
+            color: #569cd6;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 80px);
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #3e3e42;
+        }
+
+        .output-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background-color: #2d2d30;
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e3e42;
+            font-weight: bold;
+        }
+
+        .editor {
+            flex: 1;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+        }
+
+        .output {
+            flex: 1;
+            background-color: #0c0c0c;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .controls {
+            background-color: #2d2d30;
+            padding: 10px 15px;
+            border-top: 1px solid #3e3e42;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .btn:hover {
+            background-color: #1177bb;
+        }
+
+        .btn:active {
+            background-color: #0a5a8a;
+        }
+
+        .btn.clear {
+            background-color: #d73a49;
+        }
+
+        .btn.clear:hover {
+            background-color: #e24d60;
+        }
+
+        .input-area {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2d2d30;
+            border-top: 1px solid #3e3e42;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border: 1px solid #3e3e42;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #569cd6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Brainfuck Compiler</h1>
+    </div>
+
+    <div class="container">
+        <div class="editor-panel">
+            <div class="panel-header">Editor</div>
+            <textarea class="editor" id="editor" placeholder="Enter your Brainfuck code here...
+
+Examples:
+++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.
+
+Hello World:
+++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."></textarea>
+            <div class="controls">
+                <button class="btn" onclick="runBrainfuck()">Run</button>
+                <button class="btn clear" onclick="clearEditor()">Clear</button>
+                <button class="btn" onclick="loadExample()">Load Example</button>
+            </div>
+        </div>
+
+        <div class="output-panel">
+            <div class="panel-header">Output</div>
+            <div class="output" id="output">Ready to execute Brainfuck code...</div>
+            <div class="input-area">
+                <input type="text" class="input-field" id="input" placeholder="Input for Brainfuck program (if needed)" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class BrainfuckInterpreter {
+            constructor() {
+                this.memory = new Array(30000).fill(0);
+                this.pointer = 0;
+                this.output = '';
+                this.inputQueue = [];
+                this.inputIndex = 0;
+            }
+
+            setInput(input) {
+                this.inputQueue = input.split('').map(c => c.charCodeAt(0));
+                this.inputIndex = 0;
+            }
+
+            reset() {
+                this.memory = new Array(30000).fill(0);
+                this.pointer = 0;
+                this.output = '';
+                this.inputIndex = 0;
+            }
+
+            execute(code) {
+                this.reset();
+                const stack = [];
+                let codePointer = 0;
+                let steps = 0;
+                const maxSteps = 1000000;
+
+                while (codePointer < code.length && steps < maxSteps) {
+                    const command = code[codePointer];
+                    
+                    switch (command) {
+                        case '>':
+                            this.pointer = (this.pointer + 1) % 30000;
+                            break;
+                        case '<':
+                            this.pointer = (this.pointer - 1 + 30000) % 30000;
+                            break;
+                        case '+':
+                            this.memory[this.pointer] = (this.memory[this.pointer] + 1) % 256;
+                            break;
+                        case '-':
+                            this.memory[this.pointer] = (this.memory[this.pointer] - 1 + 256) % 256;
+                            break;
+                        case '.':
+                            this.output += String.fromCharCode(this.memory[this.pointer]);
+                            break;
+                        case ',':
+                            if (this.inputIndex < this.inputQueue.length) {
+                                this.memory[this.pointer] = this.inputQueue[this.inputIndex];
+                                this.inputIndex++;
+                            } else {
+                                this.memory[this.pointer] = 0;
+                            }
+                            break;
+                        case '[':
+                            if (this.memory[this.pointer] === 0) {
+                                let depth = 1;
+                                let pos = codePointer + 1;
+                                while (depth > 0 && pos < code.length) {
+                                    if (code[pos] === '[') depth++;
+                                    else if (code[pos] === ']') depth--;
+                                    pos++;
+                                }
+                                codePointer = pos - 1;
+                            } else {
+                                stack.push(codePointer);
+                            }
+                            break;
+                        case ']':
+                            if (this.memory[this.pointer] !== 0) {
+                                codePointer = stack[stack.length - 1];
+                            } else {
+                                stack.pop();
+                            }
+                            break;
+                    }
+                    
+                    codePointer++;
+                    steps++;
+                }
+
+                if (steps >= maxSteps) {
+                    this.output += '\n\n[Execution stopped: Maximum steps reached]';
+                }
+
+                return this.output;
+            }
+        }
+
+        const interpreter = new BrainfuckInterpreter();
+
+        function runBrainfuck() {
+            const code = document.getElementById('editor').value;
+            const input = document.getElementById('input').value;
+            const outputElement = document.getElementById('output');
+
+            if (!code.trim()) {
+                outputElement.textContent = 'Error: No code to execute';
+                return;
+            }
+
+            try {
+                interpreter.setInput(input);
+                const result = interpreter.execute(code);
+                outputElement.textContent = result || '[No output]';
+            } catch (error) {
+                outputElement.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function clearEditor() {
+            document.getElementById('editor').value = '';
+            document.getElementById('output').textContent = 'Ready to execute Brainfuck code...';
+        }
+
+        function loadExample() {
+            const helloWorld = `++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.`;
+            document.getElementById('editor').value = helloWorld;
+        }
+
+        // Allow Ctrl+Enter or Cmd+Enter to run
+        document.getElementById('editor').addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                runBrainfuck();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -154,12 +154,12 @@ function loadTheme() {
     const body = document.body;
     const themeToggle = document.getElementById('themeToggle');
     
-    if (savedTheme === 'dark') {
-        body.setAttribute('data-theme', 'dark');
-        themeToggle.textContent = 'Light';
-    } else {
+    if (savedTheme === 'light') {
         body.removeAttribute('data-theme');
         themeToggle.textContent = 'Dark';
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        themeToggle.textContent = 'Light';
     }
 }
 

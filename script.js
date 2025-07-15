@@ -163,8 +163,24 @@ function loadTheme() {
     }
 }
 
+// Code persistence functions
+function saveCode() {
+    const code = document.getElementById('editor').value;
+    localStorage.setItem('brainfuck-code', code);
+}
+
+function loadSavedCode() {
+    const savedCode = localStorage.getItem('brainfuck-code');
+    if (savedCode) {
+        document.getElementById('editor').value = savedCode;
+    }
+}
+
 // Initialize theme on page load
-document.addEventListener('DOMContentLoaded', loadTheme);
+document.addEventListener('DOMContentLoaded', function() {
+    loadTheme();
+    loadSavedCode();
+});
 
 // Help modal functions
 function showHelp() {
@@ -208,11 +224,13 @@ async function runBrainfuck() {
 function clearEditor() {
     document.getElementById('editor').value = '';
     document.getElementById('output').textContent = 'Ready to execute Brainfuck code...';
+    localStorage.removeItem('brainfuck-code');
 }
 
 function loadExample() {
     const helloWorld = `++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.`;
     document.getElementById('editor').value = helloWorld;
+    saveCode();
 }
 
 // Allow Ctrl+Enter or Cmd+Enter to run
@@ -220,6 +238,11 @@ document.getElementById('editor').addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         runBrainfuck();
     }
+});
+
+// Save code on input changes
+document.getElementById('editor').addEventListener('input', function() {
+    saveCode();
 });
 
 // Handle input in output area
